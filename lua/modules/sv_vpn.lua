@@ -1,4 +1,5 @@
-if SERVER then
+if (SERVER) then
+    -- Not very elaborate and will not work with ipv6 or many VPNs 
     vpn = {} vpn.__index = {} vpn.file, vpn.file_contents = nil, nil
     vpn.masks = {
         { 127, 255, 255, 255 }, { 63, 255, 255, 255 }, { 31, 255, 255, 255 },
@@ -92,14 +93,14 @@ if SERVER then
     end
 
     concommand.Add( "onion_vpn_refresh", function( ply, cmd, args )
-        if (ply:GetUserGroup() == "superadmin") then
+        if (onion.vpn_refresh_cmd and ply:GetUserGroup() == "superadmin") then
             vpn.refresh_cache()
             print("Refreshed the VPN detection list.")
         end
     end)
 
     concommand.Add( "onion_vpn_checkip", function( ply, cmd, args, arg_str )
-        if (ply:GetUserGroup() == "superadmin") then
+        if (onion.vpn_check_cmd and ply:GetUserGroup() == "superadmin") then
             pcall(function() 
                 ply:PrintMessage(HUD_PRINTCONSOLE, tostring(vpn.check_ip(arg_str))) 
             end)
@@ -108,15 +109,18 @@ if SERVER then
 
     gameevent.Listen("player_activate")
     hook.Add("player_activate", "sv_vpn", function(args)
-        local ply = Player(args.userid)
-        if (ply and (not ply:IsPlayer() or ply:IsBot() or ply:SteamID() == "STEAM_0:0:0")) then return end
-        local address = ply:IPAddress()
-        if (address ~= "loopback" and address ~= "none") then
-            local port_ind = string.find(address, ":")
-            address = string.sub(address, 1, port_ind - 1)
+        if (onion.warn_on_vpn or onion.kick_on_vpn) then
+            local ply = Player(args.userid)
+            if (ply and (not ply:IsPlayer() or ply:IsBot() or ply:SteamID() == "STEAM_0:0:0")) then return end
+            local address = ply:IPAddress()
+            if (address ~= "loopback" and address ~= "none") then
+                local port_ind = string.find(address, ":")
+                address = string.sub(address, 1, port_ind - 1)
 
-            if (vpn.check_ip(address)) then
-                print("Peeler - VPN Detected for " .. ply:Name() .. ", steamid: " .. ply:SteamID() .. ", ip: " .. address)
+                if (vpn.check_ip(address)) then
+                    if (onion.warn_on_vpn) then print("Peeler - VPN Detected for " .. ply:Name() .. ", steamid: " .. ply:SteamID() .. ", ip: " .. address) end
+                    if (onion.kick_on_vpn) then if (not onion.superadmin_exception or ply:GetUserGroup() ~= "superadmin") then ply:Kick(onion.vpn_kick_msg) end end
+                end
             end
         end
     end)

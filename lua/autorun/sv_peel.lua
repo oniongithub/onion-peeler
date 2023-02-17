@@ -30,6 +30,7 @@ end
 
 if SERVER then
     load.directory("modules")
+    load.server("sv_config.lua")
 
     timer.Simple(0, function() vpn.refresh_cache() end)
 end
