@@ -3,7 +3,7 @@ if (SERVER) then
 
     onion_db.refresh_table = function()
         if (not sql.TableExists(onion.db_table_name)) then
-            sql.Query("CREATE TABLE " .. onion.db_table_name .. "( id NUMBER, steamid TEXT, ip TEXT, banned INTEGER, familyshared INTEGER )")
+            sql.Query("CREATE TABLE " .. onion.db_table_name .. "( id INTEGER, steamid TEXT, ip TEXT, banned INTEGER, familyshared INTEGER, PRIMARY KEY(id AUTOINCREMENT) )")
         end
     end
 
@@ -134,11 +134,13 @@ if (SERVER) then
         if (address ~= "0.0.0.0") then
             local tbl = sql.Query("SELECT * FROM "  .. onion.db_table_name .. " WHERE ip='" .. address .. "';")
 
-            for i, v in pairs(tbl) do
-                if (type(v) == "table") then
-                    if (v.ip == address and v.banned == "1") then
-                        onion_db.update_info(nil, ply:SteamID(), "1", "1")
-                        game.ConsoleCommand("ulx banid " .. ply:SteamID() .. " 0 \"" .. onion.alt_ban_reason .. "\"\n")
+            if (tbl) then
+                for i, v in pairs(tbl) do
+                    if (type(v) == "table") then
+                        if (v.ip == address and v.banned == "1") then
+                            onion_db.update_info(nil, ply:SteamID(), "1", "1")
+                            game.ConsoleCommand("ulx banid " .. ply:SteamID() .. " 0 \"" .. onion.alt_ban_reason .. "\"\n")
+                        end
                     end
                 end
             end
