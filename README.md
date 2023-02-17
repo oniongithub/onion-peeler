@@ -1,5 +1,5 @@
 # Onion Peeler
-## Alt/VPN/Family Share detection
+## Server-Side Alt/VPN/Family Share detection
 
 ## Features
 * **Alt Detection** - Detect alts from server-side.
