@@ -119,7 +119,7 @@ if (SERVER) then
 
                 if (vpn.check_ip(address)) then
                     if (onion.warn_on_vpn) then print("Peeler - VPN Detected for " .. ply:Name() .. ", steamid: " .. ply:SteamID() .. ", ip: " .. address) end
-                    if (onion.kick_on_vpn) then if (not onion.superadmin_exception or ply:GetUserGroup() ~= "superadmin") then ply:Kick(onion.vpn_kick_msg) end end
+                    if (onion.kick_on_vpn) then if (not onion.vpn_superadmin or ply:GetUserGroup() ~= "superadmin") then ply:Kick(onion.vpn_kick_msg) end end
                 end
             end
         end
