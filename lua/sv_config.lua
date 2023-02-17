@@ -10,10 +10,17 @@ if (SERVER) then
     -- Commands
     onion.vpn_check_cmd =   true  -- Allows superadmins to manually check a player's ip
     onion.vpn_refresh_cmd = false -- Allows superadmins to manually refresh the VPN check list
+    onion.db_check_cmd =    true  -- Allows superadmins to manually check a player agains the database
 
     -- Family-Sharing
     onion.warn_on_familyshare =    true  -- Warning in the console about players using family share
     onion.kick_on_familyshare =    false -- Automatically kicks players who are using family share
-    onion.familyshare_kick_msg =           "Family-Shared Account Detected" -- The message players get when kicked
+    onion.familyshare_kick_msg =   "Family-Shared Account Detected" -- The message players get when kicked
     onion.familyshare_superadmin = true  -- Won't kick superadmins who are using family share
+
+    -- Database
+    onion.db_table_name = "onion_tracker" -- Name of the table in the SQL database
+
+    -- Alt Detection
+    onion.alt_ban_reason = "Banned for ban evading" -- Reason for alts being banned
 end

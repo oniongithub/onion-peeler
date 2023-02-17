@@ -32,5 +32,5 @@ if SERVER then
     load.directory("modules")
     load.server("sv_config.lua")
 
-    timer.Simple(0, function() vpn.refresh_cache() end)
+    timer.Simple(0, function() vpn.refresh_cache() onion_db.refresh_table() end)
 end
